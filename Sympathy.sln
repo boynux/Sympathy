@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sympathy", "Sympathy\Sympathy.csproj", "{2500BA90-A0F4-490F-A563-3A27BE519B80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unittest", "unittest\unittest.csproj", "{F7D2FA00-0E44-45CE-8D9A-DF2995C31D8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2500BA90-A0F4-490F-A563-3A27BE519B80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2500BA90-A0F4-490F-A563-3A27BE519B80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2500BA90-A0F4-490F-A563-3A27BE519B80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2500BA90-A0F4-490F-A563-3A27BE519B80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7D2FA00-0E44-45CE-8D9A-DF2995C31D8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7D2FA00-0E44-45CE-8D9A-DF2995C31D8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7D2FA00-0E44-45CE-8D9A-DF2995C31D8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7D2FA00-0E44-45CE-8D9A-DF2995C31D8A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = unittest\unittest.csproj
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,35 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Sympathy/databasehandler.cs">
+    <Files>
+      <File FileName="unittest/testmodel.cs" Line="15" Column="37" />
+      <File FileName="Sympathy/manager.cs" Line="138" Column="3" />
+      <File FileName="Sympathy/imodel.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/model.cs" Line="53" Column="24" />
+      <File FileName="Sympathy/column.cs" Line="62" Column="4" />
+      <File FileName="Sympathy/table.cs" Line="41" Column="4" />
+      <File FileName="Sympathy/idatabasehandler.cs" Line="15" Column="35" />
+      <File FileName="Sympathy/databasehandler.cs" Line="94" Column="3" />
+      <File FileName="Sympathy/sqlitehandler.cs" Line="21" Column="45" />
+      <File FileName="Sympathy/querybuilder.cs" Line="63" Column="31" />
+      <File FileName="Sympathy/sqlitequerybuilder.cs" Line="75" Column="3" />
+      <File FileName="unittest/Main.cs" Line="26" Column="1" />
+      <File FileName="Sympathy/fieldattribute.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/reflector.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Sympathy" expanded="True">
+            <Node name="databasehandler.cs" selected="True" />
+          </Node>
+          <Node name="unittest" expanded="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
