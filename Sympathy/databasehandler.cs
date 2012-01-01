@@ -16,8 +16,13 @@ namespace Sympathy
 		~DatabaseHandler ()
 		{
 			if (_reader != null && !_reader.IsClosed) {
-				// _reader.Close ();
+				_reader.Close ();
+				
 				// _reader.Dispose ();
+			}
+			
+			if (_connection != null && _connection.State != ConnectionState.Closed) {
+				_connection.Close ();
 			}
 		}
 		
@@ -59,7 +64,7 @@ namespace Sympathy
 			
 			for (int index = 0; index < _reader.FieldCount; ++index)
 			{
-				result[_reader.GetName (index)] = _reader.GetValue (index);
+				result[_reader.GetName (index).ToLower ()] = _reader.GetValue (index);
 			}
 			
 			return result;
@@ -94,6 +99,8 @@ namespace Sympathy
 			
 			_command.CommandText = _queryString;
 			
+			// Console.WriteLine (_queryString);
+			
 			applyFilters ();
 			applyParameters ();
 			
@@ -115,14 +122,12 @@ namespace Sympathy
 			return result;
 		}
 		
-		public QueryBuilder QueryBuilder 
-		{ 
-			get
-			{
+		public QueryBuilder QueryBuilder
+		{
+			get {
 				return _queryBuilder;
 			}
 		}
-		
 		
 		public abstract void addParameter (string name, object value);
 		protected abstract void applyFilters ();

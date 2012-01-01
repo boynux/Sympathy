@@ -17,18 +17,23 @@ namespace Sympathy
 			List<Column> columns = new List<Column> ();
 			object[] fields = _model.GetType ().GetFields ( 
 				System.Reflection.BindingFlags.Instance | 
-				System.Reflection.BindingFlags.Public 
+				System.Reflection.BindingFlags.Public |
+				System.Reflection.BindingFlags.NonPublic
 			);
 			
 			foreach (System.Reflection.FieldInfo field in fields) {
-				Column column = new Column(field);
-				foreach (System.Reflection.CustomAttributeData attribute in CustomAttributeData.GetCustomAttributes (field)) {
-					foreach (CustomAttributeNamedArgument argument in attribute.NamedArguments) {
-						column.setAttribute (argument.TypedValue.Value);
-					}
+				try {
+				if (field.GetCustomAttributes (true)[0].GetType () == typeof (Attributes.FieldAttribute)) {
+					Column column = new Column(field);
+					foreach (System.Reflection.CustomAttributeData attribute in CustomAttributeData.GetCustomAttributes (field)) {
+						foreach (CustomAttributeNamedArgument argument in attribute.NamedArguments) {
+							column.setAttribute (argument.TypedValue.Value);
+						}
 					
-					columns.Add (column);
+						columns.Add (column);
+					}
 				}
+				} catch (Exception /* e */) {}	
 			}
 			
 			return columns;

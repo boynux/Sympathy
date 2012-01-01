@@ -16,30 +16,6 @@ namespace Sympathy
 		{
 		}
 		
-		public AccessTypes AccessType 
-		{
-			get
-			{
-				return _accessType;
-			}
-			set
-			{
-				_accessType = value;
-			}
-		}
-		
-		public ColumnTypes ColumnType
-		{
-			get
-			{
-				return _columnType;
-			}
-			set
-			{
-				_columnType = value;
-			}
-		}
-		
 		public object DefaultValue
 		{
 			get
@@ -64,18 +40,40 @@ namespace Sympathy
 			}
 		}
 		
+		public AccessTypes AccessType { get; set; }
+		public ColumnTypes ColumnType { get; set; }
+		public System.Data.DbType DbType { get; set; }
+		
 		public void setValue (iModel model, object val)
 		{
-			System.ComponentModel.TypeConverter converter = System.ComponentModel.TypeDescriptor.GetConverter (val.GetType ());
-			// System.Reflection.MethodInfo converter = typeof(System).GetMethod ("convert").MakeGenericMethod (val.GetType (), _fieldInfo.ReflectedType);
-			
-			
-			_fieldInfo.SetValue (model, converter.ConvertTo (val, _fieldInfo.FieldType));
+			// parse Enum values ...
+			if (Type.IsEnum) {
+				if (DbType == System.Data.DbType.String) {
+					_fieldInfo.SetValue (model, Enum.Parse (Type, val.ToString ()));
+				} else {
+					_fieldInfo.SetValue (model, Enum.ToObject (Type, val));
+				}
+			} else if (!Type.Equals (val.GetType())) {
+				System.ComponentModel.TypeConverter converter = System.ComponentModel.TypeDescriptor.GetConverter (val.GetType ());
+				_fieldInfo.SetValue (model, converter.ConvertTo (val, Type));
+			} else {
+				_fieldInfo.SetValue (model, val);
+			}
+				
 		}
 		
 		public object getValue (iModel model)
 		{
-			return _fieldInfo.GetValue (model);
+			// convert Enum values depending to 
+			// column type ...
+			if (Type.IsEnum && ( 
+				DbType != System.Data.DbType.String ||
+				DbType != System.Data.DbType.String	)
+			) {
+				return (int)_fieldInfo.GetValue (model);
+			} else {
+				return _fieldInfo.GetValue (model);
+			}
 		} 
 		
 		public void setAttribute (object attr)
@@ -84,6 +82,8 @@ namespace Sympathy
 				AccessType = (AccessTypes)attr;
 			else if (attr is ColumnTypes)
 				ColumnType = (ColumnTypes)attr;
+			else if (attr is System.Data.DbType)
+				DbType = (System.Data.DbType)attr;
 		}
 		
 		public override string ToString ()

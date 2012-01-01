@@ -7,35 +7,14 @@ namespace Sympathy
 	{
 		public QueryBuilder (Table table, QueryType type = QueryType.Select)
 		{
-			_table = table;
-			_type = type;
+			Table = table;
+			Type = type;
 			_criteria = new Criteria ();
 			_values =  new Criteria ();
 		}
 		
-		public QueryType Type 
-		{
-			get
-			{
-				return _type;
-			}
-			set
-			{
-				_type = value;
-			}
-		}
-		
-		public Table Table 
-		{
-			get 
-			{
-				return _table;
-			}
-			set
-			{
-				_table = value;
-			}
-		}
+		public QueryType Type { get; set; }
+		public Table Table { get; set; }
 		
 		public IDictionary<string, object>Criteria
 		{
@@ -53,9 +32,45 @@ namespace Sympathy
 			}
 		}
 		
+		public Dictionary <string, KeyValuePair<Operators, object>> parseKeys (Criteria criteria)
+		{
+			Dictionary<string, KeyValuePair<Operators, object>> condition = new Dictionary<string, KeyValuePair<Operators, object>> ();
+			
+			foreach (KeyValuePair<string, object> item in criteria) {
+				string[] keys = item.Key.Split (new string[] { "__"}, StringSplitOptions.None);
+				
+				Operators oper = Operators.Equl;
+				
+				if (keys.Length > 1) {
+					// for now we just consider simple query operators
+					switch (keys[1]) {
+					case "lt":
+						oper = Operators.LessThan;
+						break;
+					case "gt":
+						oper = Operators.GreaterThan;
+						break;
+					case "lte":
+						oper = Operators.LessThanOrEqual;
+						break;
+					case "gte":
+						oper = Operators.GreaterThanOrEqual;
+						break;
+					default:
+						break;
+					}
+				}
+				
+				// we have found nothing special ...
+				condition [keys[0]] = new KeyValuePair<Operators, object> (oper, item.Value);
+			}
+			
+			return condition;
+		}
+		
 		public override string ToString ()
 		{
-			switch (_type)
+			switch (Type)
 			{
 			case QueryType.Select:
 				return selectQuery ();
@@ -83,8 +98,25 @@ namespace Sympathy
 			Delete
 		}
 		
-		protected Table _table;
-		protected QueryType _type;
+		public enum Operators 
+		{
+			Equl,
+			LessThan,
+			GreaterThan,
+			LessThanOrEqual,
+			GreaterThanOrEqual,
+			In,
+			Like,
+			Between,
+			NotEqual
+		}
+		
+		protected Dictionary<Operators, string> OperatorsString  = new Dictionary<Operators, string> () {
+			{ Operators.Equl, "=" },
+			{ Operators.LessThan, "<" },
+			{ Operators.GreaterThan, ">" }
+		};
+		
 		protected Criteria _criteria;
 		protected Criteria _values;
 	}

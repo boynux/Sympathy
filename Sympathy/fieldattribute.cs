@@ -26,31 +26,9 @@ namespace Sympathy.Attributes
 		}
 		*/
 		
-		public ColumnTypes ColumnType 
-		{
-			get
-			{
-				return _columnType;
-			}
-			
-			set 
-			{
-				this._columnType = value;
-			}
-		}
-		
-		public AccessTypes AccessType
-		{
-			get
-			{
-				return _accessType;
-			}
-			set 
-			{
-				this._accessType = value;
-			}
-			
-		}
+		public ColumnTypes ColumnType { get; set; }
+		public AccessTypes AccessType { get; set; }
+		public System.Data.DbType DbType { get; set; }
 
 		protected object _value;
 		protected ColumnTypes _columnType;

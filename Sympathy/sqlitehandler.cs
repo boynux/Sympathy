@@ -47,7 +47,7 @@ namespace Sympathy
 		
 		public override void addParameter (string name, object value)
 		{
-			((SqliteCommand)_command).Parameters.AddWithValue (string.Format ("@{0}", name), value);
+			// ((SqliteCommand)_command).Parameters.AddWithValue (string.Format ("@{0}", name), value);
 		}
 	}
 }

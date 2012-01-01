@@ -4,34 +4,30 @@ using System.Collections.Generic;
 
 namespace Sympathy
 {
-	public class Manager<_Model, _Handler> : 
-		System.Collections.Generic.IEnumerator <_Model> 
-		where _Model: Model<_Handler>, new () 
-		where _Handler: iDatabaseHandler, new ()
+	public class Manager<_Handler> 
+		where _Handler: DatabaseHandler, new ()
 	{
 		public Manager ()
 		{
 		}
 		
-		public _Model getObject ()
+		public _Model getObject<_Model> () where _Model: iModel, new ()
 		{
-			_Model model = null;
+			_Model model = new _Model ();
 			
 			_Handler handler = new _Handler ();
 			QueryBuilder builder = handler.QueryBuilder;
+			builder.Table = Table (model);
 			
 			if (_criteria != null)
 				builder.Criteria = _criteria;
-			
-			builder.Type = QueryBuilder.QueryType.Select;
-			builder.Table = Table;
 			
 			handler.QueryString = builder.ToString ();
 			
 			if (handler.next ()) {
 				Dictionary <string, object> row = handler.fetchRow ();
 			
-				model = populateModel (row);
+				model = populateModel<_Model> (row);
 				handler.close ();
 			} else {
 				handler.close ();
@@ -41,53 +37,62 @@ namespace Sympathy
 			return model;
 		}
 		
-		protected _Model populateModel (Dictionary<string, object> values)
+		public _Model getObject<_Model> (Criteria filter) where _Model: iModel, new ()
+		{
+			if (filter != null)
+				setCriteria (filter);
+			
+			return getObject <_Model> ();
+		}
+		
+		public _Model getObject <_Model> (object id) where _Model: iModel, new ()
+		{
+			setCriteria (new Criteria { {PrimaryKey<_Model> ().Name, id} });
+			return getObject<_Model> ();
+		}
+		
+		protected _Model populateModel<_Model> (Dictionary<string, object> values) where _Model: iModel, new ()
 		{	
 			_Model model = new _Model ();
-			foreach (Column column in Table) {
+			
+			foreach (Column column in Table (model)) {
 				if (typeof (iModel).IsAssignableFrom (column.Type)) {
 					try {
-						Model<_Handler> fmodel = (Model<_Handler>)Activator.CreateInstance (column.Type.MakeGenericType (typeof (_Handler)));
+						dynamic fmodel = Activator.CreateInstance (column.Type);
 						column.setValue (model, fmodel.getObject (values[column.Name.ToLower ()]));
 					} catch (DoesNotExistException /* e */) {
-						column.setValue (model, null);
+						// column.setValue (model, null);
 					}
 				} else {
-					column.setValue (model, values[column.Name]);
+					column.setValue (model, values[column.Name.ToLower ()]);
 				}
 			}
 			
 			return model;
 		}
 		
-		public Column PrimaryKey 
+		public Column PrimaryKey<_Model> () where _Model: iModel, new ()
 		{
-			get 
-			{
-				if (_table == null) {
-					_Model model = new _Model ();
-				
-					Reflector reflector = new Reflector (model);
-					_table = reflector.getTable  ();
-				}
-				
-				return _table.PrimaryKey;			
-			}
+			return Table <_Model> ().PrimaryKey;	
 		}
 		
-		public Table Table 
+		public Column PrimaryKey (iModel model)
 		{
-			get
-			{
-				if (_table == null) {
-					_Model model = new _Model ();
-			
-					Reflector reflector = new Reflector (model);
-					_table = reflector.getTable ();	
-				}
-				
-				return _table;
-			}
+			return Table (model).PrimaryKey;	
+		}
+		
+		public Table Table<_Model> () where _Model: iModel, new ()
+		{
+			iModel model = new _Model ();
+		
+			Reflector reflector = new Reflector (model);
+			return reflector.getTable ();	
+		}
+		
+		public Table Table (iModel model)
+		{
+			Reflector reflector = new Reflector (model);
+			return reflector.getTable ();	
 		}
 		
 		public void setCriteria (Criteria filter)
@@ -95,21 +100,37 @@ namespace Sympathy
 			_criteria = filter;
 		}
 		
-		public void prepareHandler ()
+		public IList<_Model> filter <_Model> (Criteria criteria = null) where _Model: iModel, new ()
+		{
+			setCriteria (criteria);
+			prepareHandler<_Model> ();
+			
+			List<_Model> list = new List<_Model> ();
+			
+			while (_handler.next ()) {
+				Dictionary <string, object> row = _handler.fetchRow ();
+			
+				list.Add (populateModel<_Model> (row));
+			} 
+			_handler.close ();
+			
+			return list;
+		}
+		
+		public void prepareHandler <_Model> () where _Model: iModel, new ()
 		{
 			 _handler = new _Handler ();
-			
-			_handler.QueryBuilder.Type = QueryBuilder.QueryType.Select;
+			_handler.QueryBuilder.Table = Table <_Model>();
 			
 			if (_criteria != null)
 				_handler.QueryBuilder.Criteria = _criteria;
-			
-			_handler.QueryBuilder.Table = Table;
 		}
 		
-		protected string getSelectQuery ()
+		protected string getSelectQuery<_Model> () where _Model: iModel, new ()
 		{
-			SqliteQueryBuilder builder = new SqliteQueryBuilder (Table);
+			_Handler handler = new _Handler ();
+			QueryBuilder builder = handler.QueryBuilder;
+			builder.Table = Table<_Model> ();
 			
 			return builder.ToString ();
 		}
@@ -119,19 +140,27 @@ namespace Sympathy
 
 			_Handler handler = new _Handler ();
 			QueryBuilder builder = handler.QueryBuilder;
-			builder.Table = Table;
+			builder.Table = Table (model);
+			builder.Type = QueryBuilder.QueryType.Insert;
 			
 			IDictionary<string, object> values = new Criteria ();
-			foreach (Column column in Table) {
-				if (column != Table.PrimaryKey || Table.PrimaryKey.AccessType != Sympathy.Attributes.AccessTypes.ReadOnly)
-					values.Add (column.Name, column.getValue (model));
-			} 
+			foreach (Column column in builder.Table) {
+				if (column != builder.Table.PrimaryKey || builder.Table.PrimaryKey.AccessType != Sympathy.Attributes.AccessTypes.ReadOnly) {
+					if (typeof (iModel).IsAssignableFrom (column.Type)) {
+						dynamic fmodel = column.getValue (model);
+						
+						values.Add (column.Name.ToLower (), fmodel.objects.PrimaryKey.getValue (fmodel));
+					} else {
+						values.Add (column.Name.ToLower (), column.getValue (model));
+					}
+				}
+			}
 			
-			if (Table.PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly &&
-				 !Table.PrimaryKey.DefaultValue.Equals (Table.PrimaryKey.getValue (model)))
+			if (builder.Table.PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly &&
+				 !builder.Table.PrimaryKey.DefaultValue.Equals (builder.Table.PrimaryKey.getValue (model)))
 			{
 				builder.Type = QueryBuilder.QueryType.Update;
-				builder.Criteria = new Criteria () { {Table.PrimaryKey.Name, Table.PrimaryKey.getValue (model)} };
+				builder.Criteria = new Criteria () { {builder.Table.PrimaryKey.Name, builder.Table.PrimaryKey.getValue (model)} };
 			}
 			else
 			{
@@ -142,73 +171,42 @@ namespace Sympathy
 			return handler;
 		}
 		
-		public iModel save (iModel model)
+		public dynamic save (iModel model)
 		{
-			_Handler handler;
-			handler = getInsertQuery (model);			
+			_Handler handler = getInsertQuery (model);
 			int id = handler.execute ();
-	
-			if (Table.PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly && 
+			
+			if (Table (model).PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly && 
 				handler.QueryBuilder.Type == QueryBuilder.QueryType.Insert )
-				Table.PrimaryKey.setValue (model, id);
+				Table (model).PrimaryKey.setValue (model, id);
 			
 			return model;
 		}
 		
 		public void delete (iModel model)
 		{
-			Criteria criteria = new Criteria () { {"id", Table.PrimaryKey.getValue (model) } };
+			Criteria criteria = new Criteria () { {"id", Table(model).PrimaryKey.getValue (model) } };
 			_Handler handler = new _Handler ();
 			
-			handler.QueryBuilder.Table = Table;
-			handler.QueryBuilder.Values = criteria;
+			handler.QueryBuilder.Table = Table (model);
 			handler.QueryBuilder.Type = QueryBuilder.QueryType.Delete;
+			handler.QueryBuilder.Criteria = criteria;
 			
 			handler.execute ();
-		}
-		
-		public _Model Current {
-			get {
-				_Model model = null;
-				Dictionary <string, object> row = _handler.fetchRow ();
-				model = populateModel (row);
-				
-				return model;
-			}
-		}
-		
-		object IEnumerator.Current {
-			get {
-				return Current;
-			}
 		}
 		
 		public void Dispose ()
 		{
 			_handler.close ();
 		}
-		
-		public bool MoveNext ()
-		{
-			if (_handler == null) {
-				prepareHandler ();
-			}
-			
-			return _handler.next ();
-		}
-		
-		public void Reset ()
-		{
-			throw new NotImplementedException ();
-		}
-		
+
 		protected Criteria _criteria;
 		protected _Handler _handler;
 		protected Table _table;
-		protected _Model _model;
+		protected iModel _model;
 	}
 	
-	public class Manager<_Model> : Manager<_Model, Sympathy.SqliteHandler> where _Model: Model<Sympathy.SqliteHandler>, new () 
+	public class Manager: Manager<Sympathy.SqliteHandler>
 	{
 		public Manager (): base () {}
 	}

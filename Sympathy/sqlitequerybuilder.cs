@@ -20,7 +20,7 @@ namespace Sympathy
 				if (Table[item.Key] != null) {
 					cols.Add (item.Key.ToLower ());
 					
-					if (typeof (Model<>).IsAssignableFrom (Table[item.Key].Type)) {
+					if (typeof (iModel).IsAssignableFrom (Table[item.Key].Type)) {
 						Reflector reflector = new Reflector ((iModel)item.Value);
 						Table table = reflector.getTable ();
 						
@@ -45,13 +45,32 @@ namespace Sympathy
 				cols.Add (column.Name);
 			}
 			
-			query = string.Format (query, string.Join (", ", cols), _table.Name);
+			query = string.Format (query, string.Join (", ", cols), Table.Name);
 			
 			List<string> where = new List<string> ();
-			foreach (KeyValuePair<string, object> item in _criteria)
+			Dictionary <string, KeyValuePair<Operators, object>> criteria = parseKeys (_criteria);
+			
+			foreach (KeyValuePair<string, KeyValuePair<Operators, object>> item in criteria)
 			{
-				if (Table[item.Key] != null)
-					where.Add (string.Format ("{0}='{1}'", item.Key, item.Value));
+				if (Table[item.Key] != null) {
+					string _operator = OperatorsString [item.Value.Key];
+					object value = item.Value.Value;
+					
+					if (Table[item.Key] != null) {
+						if (typeof (iModel).IsAssignableFrom (value.GetType ())) {
+							Reflector reflector = new Reflector ((iModel)value);
+							Table table = reflector.getTable ();
+							
+							value = table.PrimaryKey.getValue ((iModel)value);
+						}
+						
+						if (item.Value.Value.GetType ().Equals (typeof (int)) ||
+							item.Value.Value.GetType ().Equals (typeof (long)))
+							where.Add (string.Format ("{0} {1} {2}", item.Key, _operator, value));
+						else
+							where.Add (string.Format ("{0} {1} '{2}'", item.Key, _operator, value));
+					}
+				}
 			}
 			
 			if (where.Count > 0) {
