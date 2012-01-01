@@ -76,14 +76,15 @@ namespace Sympathy
 			}
 		} 
 		
-		public void setAttribute (object attr)
+		public void setAttribute (System.Reflection.CustomAttributeTypedArgument attr)
 		{
-			if (attr is AccessTypes)
-				AccessType = (AccessTypes)attr;
-			else if (attr is ColumnTypes)
-				ColumnType = (ColumnTypes)attr;
-			else if (attr is System.Data.DbType)
-				DbType = (System.Data.DbType)attr;
+			Console.WriteLine ("Setting attr {0}", attr.ToString ());
+			if (attr.ArgumentType.Equals (typeof (AccessTypes)))
+				AccessType = (AccessTypes)attr.Value;
+			else if (attr.ArgumentType.Equals (typeof (ColumnTypes)))
+				ColumnType = (ColumnTypes)attr.Value;
+			else if (attr.ArgumentType.Equals (typeof (System.Data.DbType)))
+				DbType = (System.Data.DbType)attr.Value;
 		}
 		
 		public override string ToString ()

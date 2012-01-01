@@ -27,7 +27,7 @@ namespace Sympathy
 					Column column = new Column(field);
 					foreach (System.Reflection.CustomAttributeData attribute in CustomAttributeData.GetCustomAttributes (field)) {
 						foreach (CustomAttributeNamedArgument argument in attribute.NamedArguments) {
-							column.setAttribute (argument.TypedValue.Value);
+							column.setAttribute (argument.TypedValue);
 						}
 					
 						columns.Add (column);
