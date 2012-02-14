@@ -1,0 +1,8 @@
+2012-02-14  Mohamad H. ARAB  <arab@pishgaman.net>
+
+	* Main.cs:
+	* unittest.pidb:
+	* linked_model.cs:
+	* test.sqlite:
+	* Sympathy.dll.mdb: Bug fixes and code clean-ups
+

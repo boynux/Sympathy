@@ -74,14 +74,14 @@ namespace Sympathy
 				if (item.Value != null && Table[item.Key] != null) {
 					cols.Add (item.Key.ToLower ());
 					
-					if (typeof (iModel).IsAssignableFrom (Table[item.Key].Type)) {
-						Reflector reflector = new Reflector ((iModel)item.Value);
-						Table table = reflector.getTable ();
+					//if (typeof (iModel).IsAssignableFrom (Table[item.Key].Type)) {
+				//		Reflector reflector = new Reflector ((iModel)item.Value);
+					//	Table table = reflector.getTable ();
 						
-						vals.Add (string.Format ("'{0}'", table.PrimaryKey.getValue ((iModel)item.Value)));
-					} else {
+				//		vals.Add (string.Format ("'{0}'", table.PrimaryKey.getValue ((iModel)item.Value)));
+				//	} else {
 						vals.Add (string.Format ("'{0}'", item.Value.ToString ()));
-					}
+				//	}
 				}
 			}
 			

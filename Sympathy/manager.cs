@@ -11,19 +11,13 @@ namespace Sympathy
 		{
 		}
 		
-		public _Model getObject<_Model> () where _Model: iModel, new ()
+		public _Model getObjectFromQuery<_Model> (string queryString) where _Model: iModel, new ()
 		{
-			_Model model = new _Model ();
-			
 			_Handler handler = new _Handler ();
-			QueryBuilder builder = handler.QueryBuilder;
-			builder.Table = Table (model);
+			handler.QueryString = queryString;
 			
-			if (_criteria != null)
-				builder.Criteria = _criteria;
-			
-			handler.QueryString = builder.ToString ();
-			
+			_Model model;
+				
 			if (handler.next ()) {
 				Dictionary <string, object> row = handler.fetchRow ();
 			
@@ -35,6 +29,20 @@ namespace Sympathy
 			}
 			
 			return model;
+		}
+		
+		public _Model getObject<_Model> () where _Model: iModel, new ()
+		{
+			_Model model = new _Model ();
+			
+			_Handler handler = new _Handler ();
+			QueryBuilder builder = handler.QueryBuilder;
+			builder.Table = Table (model);
+			
+			if (_criteria != null)
+				builder.Criteria = _criteria;
+			
+			return getObjectFromQuery<_Model> (builder.ToString ());
 		}
 		
 		public _Model getObject<_Model> (Criteria filter) where _Model: iModel, new ()
@@ -56,10 +64,14 @@ namespace Sympathy
 			_Model model = new _Model ();
 			
 			foreach (Column column in Table (model)) {
-				if (typeof (iModel).IsAssignableFrom (column.Type)) {
+				if (column.ColumnType == Sympathy.Attributes.ColumnTypes.OneToMany) {
+					throw new NotImplementedException ();
+				} else if (typeof (iModel).IsAssignableFrom (column.Type)) {
 					try {
 						dynamic fmodel = Activator.CreateInstance (column.Type);
-						column.setValue (model, fmodel.getObject (values[column.Name.ToLower ()]));
+						
+						dynamic value = this.GetType ().GetMethod ("getObject", new Type [] { typeof (Criteria) }).MakeGenericMethod (column.Type).Invoke (this, new object[] { new Criteria () { {Table(fmodel).PrimaryKey.Name.ToLower (), values[column.Name.ToLower ()] } } });
+						column.setValue (model, value);
 					} catch (DoesNotExistException /* e */) {
 						// column.setValue (model, null);
 					}
@@ -70,6 +82,25 @@ namespace Sympathy
 			
 			return model;
 		}
+		/*
+		protected string getOneToManyQuery<_Model> (Column column) where _Model: iModel, new ()
+		{
+			Type[] genericType = column.Type.GetGenericArguments ();
+		
+			if (column.Type.IsAssignableFrom (typeof (IList<>)))
+			{
+				//Column id = new Column (new System.Reflection.FieldInfo ())
+				//Table = new Table (
+				//	string.Format ("{0}_{1}", Utils.genrateDBNameFromType (typeof (_Model)), column.Name.ToLower ()),
+					
+			}
+			_Handler handler = new _Handler ();
+			// handler.QueryBuilder.
+			
+			return string.Empty;
+
+		}
+		*/	
 		
 		public Column PrimaryKey<_Model> () where _Model: iModel, new ()
 		{
@@ -100,21 +131,30 @@ namespace Sympathy
 			_criteria = filter;
 		}
 		
+		public IList<_Model> filterFromQuery <_Model> (string queryStrng) where _Model: iModel, new ()
+		{
+			_Handler handler = new _Handler ();
+			handler.QueryString = queryStrng;
+			
+			List<_Model> list = new List<_Model> ();
+			
+			while (handler.next ()) {
+				Dictionary <string, object> row = handler.fetchRow ();
+			
+				list.Add (populateModel<_Model> (row));
+			} 
+			
+			handler.close ();
+			
+			return list;
+		}
+		
 		public IList<_Model> filter <_Model> (Criteria criteria = null) where _Model: iModel, new ()
 		{
 			setCriteria (criteria);
 			prepareHandler<_Model> ();
 			
-			List<_Model> list = new List<_Model> ();
-			
-			while (_handler.next ()) {
-				Dictionary <string, object> row = _handler.fetchRow ();
-			
-				list.Add (populateModel<_Model> (row));
-			} 
-			_handler.close ();
-			
-			return list;
+			return filterFromQuery <_Model> (_handler.QueryBuilder.ToString ());
 		}
 		
 		public void prepareHandler <_Model> () where _Model: iModel, new ()
@@ -149,7 +189,7 @@ namespace Sympathy
 					if (typeof (iModel).IsAssignableFrom (column.Type)) {
 						dynamic fmodel = column.getValue (model);
 						
-						values.Add (column.Name.ToLower (), fmodel.objects.PrimaryKey.getValue (fmodel));
+						values.Add (column.Name.ToLower (), Table (fmodel).PrimaryKey.getValue (fmodel));
 					} else {
 						values.Add (column.Name.ToLower (), column.getValue (model));
 					}

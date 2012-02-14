@@ -1,0 +1,12 @@
+2012-02-14  Mohamad H. ARAB  <arab@pishgaman.net>
+
+	* utils.cs:
+	* column.cs:
+	* manager.cs:
+	* reflector.cs:
+	* Sympathy.pidb:
+	* Sympathy.csproj:
+	* fieldattribute.cs:
+	* mssqlqueryuilder.cs:
+	* sqlitequerybuilder.cs: Bug fixes and code clean-ups
+

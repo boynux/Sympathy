@@ -51,6 +51,7 @@
     <Compile Include="sqlitequerybuilder.cs" />
     <Compile Include="mssqlqueryuilder.cs" />
     <Compile Include="mssqlhandler.cs" />
+    <Compile Include="utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

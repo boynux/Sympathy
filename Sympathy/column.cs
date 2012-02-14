@@ -74,11 +74,10 @@ namespace Sympathy
 			} else {
 				return _fieldInfo.GetValue (model);
 			}
-		} 
+		}
 		
 		public void setAttribute (System.Reflection.CustomAttributeTypedArgument attr)
 		{
-			Console.WriteLine ("Setting attr {0}", attr.ToString ());
 			if (attr.ArgumentType.Equals (typeof (AccessTypes)))
 				AccessType = (AccessTypes)attr.Value;
 			else if (attr.ArgumentType.Equals (typeof (ColumnTypes)))

@@ -11,8 +11,8 @@ namespace UnitTest
 		public readonly int ID ;
 		
 		[FieldAttribute]
-		protected int testModel;
-		
+		public TestModel TestModel;
+		/*
 		public TestModel TestModel 
 		{
 			get
@@ -33,5 +33,6 @@ namespace UnitTest
 		}
 		
 		public TestModel _testModel;
+		*/
 	}
 }

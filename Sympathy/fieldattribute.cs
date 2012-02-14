@@ -39,7 +39,7 @@ namespace Sympathy.Attributes
 	{
 		None,
 		PrimaryKey,
-		Reference
+		OneToMany
 	}
 	
 	public enum AccessTypes
