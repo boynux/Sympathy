@@ -1,7 +1,7 @@
 using System;
 using Mono;
 using System.Data;
-using Mono.Data.Sqlite;
+using System.Data.SQLite;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,10 +12,10 @@ namespace Sympathy
 		public SqliteHandler () : base ()
 		{
 			string dataSource = "test.sqlite";
-			_command = new SqliteCommand ();
+			_command = new SQLiteCommand ();
 			
 			_connectionString = string.Format ("Data Source={0}", dataSource);
-			_connection = new SqliteConnection (_connectionString);
+			_connection = new SQLiteConnection (_connectionString);
 			
 			_queryBuilder = new SqliteQueryBuilder ();
 		}
@@ -41,7 +41,7 @@ namespace Sympathy
 				return ;
 			
 			foreach (KeyValuePair<string, object> item in _criteria) {
-				((SqliteCommand)_command).Parameters.AddWithValue (string.Format ("@{0}", item.Key), item.Value);
+				((SQLiteCommand)_command).Parameters.AddWithValue (string.Format ("@{0}", item.Key), item.Value);
 			}
 		}
 		

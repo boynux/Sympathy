@@ -57,7 +57,7 @@ namespace Sympathy
 			get
 			{
 				foreach (Column col in _columns) {
-					if (col.Name.ToLower () == columnName.ToLower ()) {
+					if (col.Name.ToLower () == Utils.genrateNameFromType (columnName)) {
 						return col;
 					}
 				}

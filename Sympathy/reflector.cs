@@ -55,7 +55,7 @@ namespace Sympathy
 				}
 			}
 			if (table.Length == 0)
-				table = Utils.genrateDBNameFromType (_model.GetType ());
+				table = Utils.genrateNameFromType (_model.GetType ());
 			
 			return new Sympathy.Table (table, getColumns ().ToArray ());
 		}

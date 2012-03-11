@@ -4,10 +4,13 @@ namespace Sympathy
 {
 	public class Utils
 	{
-		public static string genrateDBNameFromType (Type type)
+		public static string genrateNameFromType (Type type)
 		{
-			string typeName = type.ToString ();
-			
+			return genrateNameFromType (type.ToString ());
+		}
+		
+		public static string genrateNameFromType (string typeName)
+		{
 			// replace name space points with _
 			string[] parts =  typeName.Split ('.');
 			for (int index = 0; index < parts.Length; ++index)
@@ -17,9 +20,16 @@ namespace Sympathy
 				for (int index1 = 0; index1 < parts[index].Length; ++index1)
 				{
 					char letter = parts[index][index1];
-					if (letter >= 'A' && letter <= 'Z') 
-					{
-						word += (index1 > 0 ? "_" : "") + letter.ToString ().ToLower ();
+					if (letter >= 'A' && letter <= 'Z') {
+						if (index1 < parts[index].Length - 1) {
+							char nextLetter = parts[index][index1 + 1];
+							if (nextLetter >= 'a' && nextLetter <= 'z')
+								word += (index1 > 0 ? "_" : "") + letter.ToString ().ToLower ();
+							else 
+								word += letter.ToString ().ToLower ();
+						} else {
+							word += letter.ToString ().ToLower ();
+						}
 					} 
 					else
 					{

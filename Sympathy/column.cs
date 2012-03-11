@@ -14,6 +14,7 @@ namespace Sympathy
 		
 		protected void initialize ()
 		{
+			DbType = System.Data.DbType.String;
 		}
 		
 		public object DefaultValue
@@ -28,7 +29,7 @@ namespace Sympathy
 		{
 			get
 			{
-				return _fieldInfo.Name;
+				return Utils.genrateNameFromType(_fieldInfo.Name);
 			}
 		}
 		
@@ -66,11 +67,10 @@ namespace Sympathy
 		{
 			// convert Enum values depending to 
 			// column type ...
-			if (Type.IsEnum && ( 
-				DbType != System.Data.DbType.String ||
-				DbType != System.Data.DbType.String	)
-			) {
+			if (Type.IsEnum && DbType != System.Data.DbType.String) {
 				return (int)_fieldInfo.GetValue (model);
+			} else if (Type == typeof (Boolean) && DbType != System.Data.DbType.String) {
+				return Convert.ToBoolean (_fieldInfo.GetValue (model)) == true ? 1 : 0;
 			} else {
 				return _fieldInfo.GetValue (model);
 			}

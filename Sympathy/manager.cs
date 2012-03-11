@@ -177,7 +177,6 @@ namespace Sympathy
 		
 		protected _Handler getInsertQuery (iModel model)
 		{
-
 			_Handler handler = new _Handler ();
 			QueryBuilder builder = handler.QueryBuilder;
 			builder.Table = Table (model);
