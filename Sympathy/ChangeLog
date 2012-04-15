@@ -1,3 +1,7 @@
+2012-04-15  Mohamad H. ARAB  <arab@pishgaman.net>
+
+	* mssqlqueryuilder.cs: Fix use of SQL keywords as column name.
+
 2012-02-14  Mohamad H. ARAB  <arab@pishgaman.net>
 
 	* utils.cs:

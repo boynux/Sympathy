@@ -76,7 +76,7 @@ namespace Sympathy
 			
 			foreach (KeyValuePair<string, object> item in values) {
 				if (item.Value != null && Table[item.Key] != null) {
-					cols.Add (item.Key.ToLower ());
+					cols.Add (string.Format ("[{0}]", item.Key.ToLower ()));
 					
 					System.Data.DbType colType = Table[item.Key].DbType;
 					
@@ -104,9 +104,9 @@ namespace Sympathy
 					System.Data.DbType colType = Table[item.Key].DbType;
 					
 					if (colType == System.Data.DbType.String || colType == System.Data.DbType.DateTime)
-						update.Add (string.Format ("{0} = '{1}'", Utils.genrateNameFromType (item.Key), item.Value.ToString ()));
+						update.Add (string.Format ("[{0}] = '{1}'", Utils.genrateNameFromType (item.Key), item.Value.ToString ()));
 					else
-						update.Add (string.Format ("{0} = {1}", Utils.genrateNameFromType (item.Key), item.Value));
+						update.Add (string.Format ("[{0}] = {1}", Utils.genrateNameFromType (item.Key), item.Value));
 				}
 			}
 			
