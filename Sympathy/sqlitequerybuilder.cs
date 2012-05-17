@@ -67,8 +67,15 @@ namespace Sympathy
 						if (item.Value.Value.GetType ().Equals (typeof (int)) ||
 							item.Value.Value.GetType ().Equals (typeof (long)))
 							where.Add (string.Format ("{0} {1} {2}", item.Key, _operator, value));
-						else
+						else if (item.Value.Value.GetType ().IsArray &&
+						         typeof (string).IsAssignableFrom (item.Value.Value.GetType ()) &&
+						         item.Value.Key == Operators.In) {
+							where.Add (string.Format ("{0} {1} ({2})", item.Key, _operator, string.Join (",", value)));
+						} else if (item.Value.Key == Operators.In)
+							where.Add (string.Format ("{0} {1} ({2})", item.Key, _operator, value));
+						else 
 							where.Add (string.Format ("{0} {1} '{2}'", item.Key, _operator, value));
+						
 					}
 				}
 			}

@@ -56,6 +56,9 @@ namespace Sympathy
 					case "gte":
 						oper = Operators.GreaterThanOrEqual;
 						break;
+					case "in":
+						oper = Operators.In;
+						break;
 					default:
 						break;
 					}
@@ -114,7 +117,8 @@ namespace Sympathy
 		protected Dictionary<Operators, string> OperatorsString  = new Dictionary<Operators, string> () {
 			{ Operators.Equl, "=" },
 			{ Operators.LessThan, "<" },
-			{ Operators.GreaterThan, ">" }
+			{ Operators.GreaterThan, ">" },
+			{ Operators.In, "in" }
 		};
 		
 		protected Criteria _criteria;

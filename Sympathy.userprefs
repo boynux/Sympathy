@@ -1,34 +1,34 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Sympathy/mssqlqueryuilder.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Sympathy/mssqlhandler.cs">
     <Files>
       <File FileName="unittest/testmodel.cs" Line="17" Column="55" />
-      <File FileName="Sympathy/manager.cs" Line="180" Column="1" />
-      <File FileName="Sympathy/imodel.cs" Line="9" Column="3" />
-      <File FileName="Sympathy/table.cs" Line="60" Column="34" />
+      <File FileName="Sympathy/manager.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/imodel.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/table.cs" Line="1" Column="1" />
       <File FileName="Sympathy/idatabasehandler.cs" Line="1" Column="1" />
-      <File FileName="Sympathy/databasehandler.cs" Line="94" Column="1" />
-      <File FileName="Sympathy/sqlitehandler.cs" Line="18" Column="4" />
-      <File FileName="Sympathy/querybuilder.cs" Line="34" Column="3" />
-      <File FileName="Sympathy/sqlitequerybuilder.cs" Line="33" Column="4" />
-      <File FileName="unittest/Main.cs" Line="10" Column="4" />
-      <File FileName="Sympathy/fieldattribute.cs" Line="42" Column="12" />
-      <File FileName="Sympathy/reflector.cs" Line="27" Column="33" />
-      <File FileName="Sympathy/mssqlqueryuilder.cs" Line="79" Column="61" />
-      <File FileName="Sympathy/mssqlhandler.cs" Line="17" Column="30" />
-      <File FileName="unittest/linked_model.cs" Line="14" Column="9" />
-      <File FileName="Sympathy/modelattribute.cs" Line="15" Column="1" />
+      <File FileName="Sympathy/databasehandler.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/sqlitehandler.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/querybuilder.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/sqlitequerybuilder.cs" Line="1" Column="1" />
+      <File FileName="unittest/Main.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/fieldattribute.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/reflector.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/mssqlhandler.cs" Line="11" Column="8" />
+      <File FileName="unittest/linked_model.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/modelattribute.cs" Line="1" Column="1" />
       <File FileName="unittest/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="Sympathy/utils.cs" Line="12" Column="43" />
-      <File FileName="Sympathy/column.cs" Line="17" Column="39" />
+      <File FileName="Sympathy/utils.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/column.cs" Line="1" Column="1" />
       <File FileName="Sympathy/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="Sympathy/mssqlqueryuilder.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Sympathy" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="mssqlqueryuilder.cs" selected="True" />
+            <Node name="mssqlhandler.cs" selected="True" />
           </Node>
           <Node name="unittest" expanded="True" />
         </State>
