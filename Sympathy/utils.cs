@@ -21,13 +21,22 @@ namespace Sympathy
 				{
 					char letter = parts[index][index1];
 					if (letter >= 'A' && letter <= 'Z') {
+						if (index1 > 0) {
+							char prevLetter = parts[index][index1 - 1];
+							
+							if ((prevLetter >= 'a' && prevLetter <= 'z') || (prevLetter >= '0' && prevLetter <= '9'))
+								word += "_" + letter.ToString ().ToLower ();
+							else 
+								word += letter.ToString ().ToLower ();
+						}
+						/*
 						if (index1 < parts[index].Length - 1) {
 							char nextLetter = parts[index][index1 + 1];
 							if (nextLetter >= 'a' && nextLetter <= 'z')
 								word += (index1 > 0 ? "_" : "") + letter.ToString ().ToLower ();
 							else 
 								word += letter.ToString ().ToLower ();
-						} else {
+						} */ else {
 							word += letter.ToString ().ToLower ();
 						}
 					} 

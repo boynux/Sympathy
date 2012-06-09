@@ -16,7 +16,7 @@ namespace Sympathy
 			List<string> cols = new List<string> ();
 			foreach (Column column in Table) 
 			{
-				cols.Add (column.Name);
+				cols.Add (string.Format ("[{0}]", column.Name));
 			}
 			
 			query = string.Format (query, string.Join (", ", cols), Table.Name);
@@ -38,7 +38,8 @@ namespace Sympathy
 							value = table.PrimaryKey.getValue ((iModel)value);
 						}
 						
-						string key = Utils.genrateNameFromType (item.Key);
+						// string key = Utils.genrateNameFromType (item.Key);
+						string key = Table[item.Key].Name;
 						
 						if (item.Value.Value == null) {
 							where.Add (string.Format ("{0} IS NULL", key));

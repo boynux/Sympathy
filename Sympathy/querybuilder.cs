@@ -59,6 +59,12 @@ namespace Sympathy
 					case "in":
 						oper = Operators.In;
 						break;
+					case "ne":
+						oper = Operators.NotEqual;
+						break;
+					case "like":
+						oper = Operators.Like;
+						break;
 					default:
 						break;
 					}
@@ -117,8 +123,12 @@ namespace Sympathy
 		protected Dictionary<Operators, string> OperatorsString  = new Dictionary<Operators, string> () {
 			{ Operators.Equl, "=" },
 			{ Operators.LessThan, "<" },
+			{ Operators.LessThanOrEqual, "<=" },
 			{ Operators.GreaterThan, ">" },
-			{ Operators.In, "in" }
+			{ Operators.GreaterThanOrEqual, ">=" },
+			{ Operators.Like, ":LIKE" },
+			{ Operators.In, "in" },
+			{ Operators.NotEqual, "<>" }
 		};
 		
 		protected Criteria _criteria;

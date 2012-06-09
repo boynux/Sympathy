@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Sympathy
 {
 	public class Table : System.Collections.Generic.IEnumerator<Column>, IEnumerable
 	{
-		public Table (string tableName, Column[] columns)
+		public Table (string tableName, Dictionary<string, Column> columns)
 		{
 			_tableName = tableName;
 			_columns = columns;
+			enumerator = columns.GetEnumerator ();
 			index = -1;
 		}
 		
@@ -20,7 +22,7 @@ namespace Sympathy
 			}
 		}
 		
-		public Column[] Columns 
+		public Dictionary<string, Column> Columns 
 		{
 			get
 			{
@@ -32,23 +34,12 @@ namespace Sympathy
 		{
 			get 
 			{
-				foreach (Column col in _columns) {
-					if (col.ColumnType == Sympathy.Attributes.ColumnTypes.PrimaryKey)
-						return col;
+				foreach (KeyValuePair<string, Column> col in _columns) {
+					if (col.Value.ColumnType == Sympathy.Attributes.ColumnTypes.PrimaryKey)
+						return col.Value;
 				}
 				
 				return null;
-			}
-		}
-		
-		public Column this[int index]
-		{
-			get
-			{
-				if (index < _columns.Length && index > -1)
-					return _columns[index];
-				
-				throw new IndexOutOfRangeException ();
 			}
 		}
 		
@@ -56,19 +47,23 @@ namespace Sympathy
 		{
 			get
 			{
-				foreach (Column col in _columns) {
-					if (col.Name.ToLower () == Utils.genrateNameFromType (columnName)) {
-						return col;
+				if (_columns.ContainsKey (columnName))
+					return _columns[columnName];
+				
+				
+				foreach (KeyValuePair<string, Column> col in _columns) {
+					if (col.Value.Name.ToLower () == Utils.genrateNameFromType (columnName)) {
+						return col.Value;
 					}
 				}
 				
-				throw new ColumnDoesNotExist ();
+				throw new ColumnDoesNotExist (columnName);
 			}
 		}
 		
 		public Column Current {
 			get {
-				return this[index];
+				return ((KeyValuePair<string, Column>) enumerator.Current).Value;
 			}
 		}
 		
@@ -80,17 +75,16 @@ namespace Sympathy
 		
 		public bool MoveNext ()
 		{
-			if (index < _columns.Length - 1) {
-				++index;
+			if (enumerator.MoveNext ())
 				return true;
-			}
-			
+		
 			return false;
 				
 		}
 		
 		public void Reset ()
 		{
+			enumerator.Reset ();
 			index = -1;
 		}
 		
@@ -105,10 +99,14 @@ namespace Sympathy
 		}
 		
 		protected string _tableName;
-		protected Column[] _columns;
+		protected Dictionary<string, Column> _columns;
 		protected int index;
+		protected IDictionaryEnumerator enumerator;
 	}
 	
-	public class ColumnDoesNotExist : Exception {}
+	public class ColumnDoesNotExist : Exception 
+	{
+		public ColumnDoesNotExist (string message) : base (message) {}
+	}
 }
 

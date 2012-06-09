@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Sympathy.Attributes
 {
+	[AttributeUsage (AttributeTargets.Field, Inherited = true)]
 	public class FieldAttribute : System.Attribute
 	{
 		public FieldAttribute ()
@@ -29,6 +30,7 @@ namespace Sympathy.Attributes
 		public ColumnTypes ColumnType { get; set; }
 		public AccessTypes AccessType { get; set; }
 		public System.Data.DbType DbType { get; set; }
+		public string ColumnName { get; set; }
 
 		protected object _value;
 		protected ColumnTypes _columnType;

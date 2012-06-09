@@ -1,3 +1,18 @@
+2012-06-09  Mohamad H. ARAB  <arab@pishgaman.net>
+
+	* table.cs:
+	* utils.cs:
+	* column.cs:
+	* reflector.cs:
+	* Sympathy.pidb:
+	* querybuilder.cs:
+	* fieldattribute.cs:
+	* modelattribute.cs:
+	* mssqlqueryuilder.cs: MS Quier builder operators extended.
+	Attributes inheritance added.
+	Bug fixes.
+
+
 2012-05-17  Mohamad H. ARAB  <arab@pishgaman.net>
 
 	* Sympathy.pidb: 

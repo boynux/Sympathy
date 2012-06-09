@@ -29,7 +29,14 @@ namespace Sympathy
 		{
 			get
 			{
-				return Utils.genrateNameFromType(_fieldInfo.Name);
+				if (_columnName == string.Empty)
+					return Utils.genrateNameFromType(_fieldInfo.Name);
+				
+				return _columnName;
+			}
+			
+			set {
+				_columnName = value;
 			}
 		}
 		
@@ -54,6 +61,8 @@ namespace Sympathy
 				} else {
 					_fieldInfo.SetValue (model, Enum.ToObject (Type, val));
 				}
+			} else if ( val.Equals (DBNull.Value) && Type.IsValueType ) {
+				_fieldInfo.SetValue (model, Activator.CreateInstance (Type));
 			} else if (!Type.Equals (val.GetType())) {
 				System.ComponentModel.TypeConverter converter = System.ComponentModel.TypeDescriptor.GetConverter (val.GetType ());
 				_fieldInfo.SetValue (model, converter.ConvertTo (val, Type));
@@ -76,7 +85,7 @@ namespace Sympathy
 			}
 		}
 		
-		public void setAttribute (System.Reflection.CustomAttributeTypedArgument attr)
+		public void setAttribute (string name, System.Reflection.CustomAttributeTypedArgument attr)
 		{
 			if (attr.ArgumentType.Equals (typeof (AccessTypes)))
 				AccessType = (AccessTypes)attr.Value;
@@ -84,6 +93,8 @@ namespace Sympathy
 				ColumnType = (ColumnTypes)attr.Value;
 			else if (attr.ArgumentType.Equals (typeof (System.Data.DbType)))
 				DbType = (System.Data.DbType)attr.Value;
+			else if (name == "ColumnName")
+				Name = (string)attr.Value;
 		}
 		
 		public override string ToString ()
@@ -94,6 +105,7 @@ namespace Sympathy
 		protected System.Reflection.FieldInfo _fieldInfo;
 		protected AccessTypes _accessType;
 		protected ColumnTypes _columnType;
+		protected string _columnName = "";
 	}
 }
 

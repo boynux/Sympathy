@@ -2,6 +2,7 @@ using System;
 
 namespace Sympathy.Attributes
 {
+	[AttributeUsage( AttributeTargets.Class, Inherited = true )]
 	public class ModelAttribute : System.Attribute
 	{
 		public ModelAttribute ()

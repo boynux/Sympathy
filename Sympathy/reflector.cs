@@ -12,13 +12,14 @@ namespace Sympathy
 			info = _model.GetType ();
 		}
 		
-		public List<Column> getColumns ()
+		public Dictionary<string, Column> getColumns ()
 		{
-			List<Column> columns = new List<Column> ();
+			Dictionary<string, Column> columns = new Dictionary<string, Column> ();
 			object[] fields = _model.GetType ().GetFields ( 
 				System.Reflection.BindingFlags.Instance | 
 				System.Reflection.BindingFlags.Public |
-				System.Reflection.BindingFlags.NonPublic
+				System.Reflection.BindingFlags.NonPublic |
+			    System.Reflection.BindingFlags.FlattenHierarchy
 			);
 			
 			foreach (System.Reflection.FieldInfo field in fields) {
@@ -27,10 +28,10 @@ namespace Sympathy
 					Column column = new Column(field);
 					foreach (System.Reflection.CustomAttributeData attribute in CustomAttributeData.GetCustomAttributes (field)) {
 						foreach (CustomAttributeNamedArgument argument in attribute.NamedArguments) {
-							column.setAttribute (argument.TypedValue);
+							column.setAttribute (argument.MemberInfo.Name, argument.TypedValue);
 						}
 					
-						columns.Add (column);
+						columns.Add (field.Name, column);
 					}
 				}
 				} catch (Exception /* e */) {}	
@@ -57,7 +58,7 @@ namespace Sympathy
 			if (table.Length == 0)
 				table = Utils.genrateNameFromType (_model.GetType ());
 			
-			return new Sympathy.Table (table, getColumns ().ToArray ());
+			return new Sympathy.Table (table, getColumns ());
 		}
 		
 		protected iModel _model;
