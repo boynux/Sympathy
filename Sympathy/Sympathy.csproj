@@ -33,7 +33,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
-      <HintPath>..\..\..\Backup\sales\bin\System.Data.SQLite.dll</HintPath>
+      <HintPath>bin\Debug\System.Data.SQLite.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

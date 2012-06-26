@@ -11,7 +11,7 @@ namespace Sympathy
 		
 		protected override string selectQuery ()
 		{
-			string query = "SELECT {0} FROM {1}";
+			string query = "SELECT {0} FROM [{1}]";
 			
 			List<string> cols = new List<string> ();
 			foreach (Column column in Table) 
@@ -42,18 +42,21 @@ namespace Sympathy
 						string key = Table[item.Key].Name;
 						
 						if (item.Value.Value == null) {
-							where.Add (string.Format ("{0} IS NULL", key));
+							where.Add (string.Format ("[{0}] IS NULL", key));
 						} else if (item.Value.Value.GetType ().Equals (typeof (int)) ||
 							item.Value.Value.GetType ().Equals (typeof (long)))
-							where.Add (string.Format ("{0} {1} {2}", key, _operator, value));
+							where.Add (string.Format ("[{0}] {1} {2}", key, _operator, value));
 						else if (item.Value.Value.GetType ().IsArray &&
 						         typeof (string).IsAssignableFrom (item.Value.Value.GetType ()) &&
 						         item.Value.Key == Operators.In) {
-							where.Add (string.Format ("{0} {1} ({2})", key, _operator, string.Join (",", value)));
-						} else if (item.Value.Key == Operators.In)
-							where.Add (string.Format ("{0} {1} ({2})", key, _operator, value));
-						else
-							where.Add (string.Format ("{0} {1} '{2}'", key, _operator, value));
+							where.Add (string.Format ("[{0}] {1} ({2})", key, _operator, string.Join (",", value)));
+						} else if (item.Value.Key == Operators.In) {
+							where.Add (string.Format ("[{0}] {1} ({2})", key, _operator, value));
+						} else if (value.GetType ().Equals ( typeof (Boolean)) && Table[item.Key].DbType !=  System.Data.DbType.String) {
+							where.Add (string.Format ("[{0}] {1} '{2}'", key, _operator, (bool)value ? 1 : 0));
+						} else {
+							where.Add (string.Format ("[{0}] {1} '{2}'", key, _operator, value));
+						}
 					}
 				}
 			}
@@ -75,7 +78,7 @@ namespace Sympathy
 		
 		protected override string insertQuery (System.Collections.Generic.IDictionary<string, object> values)
 		{
-			string query = "INSERT INTO {0} ({1}) VALUES ({2}); SELECT CAST(Scope_Identity() AS INT);";
+			string query = "INSERT INTO [{0}] ({1}) VALUES ({2}); SELECT CAST(Scope_Identity() AS INT);";
 			
 			List<string> cols = new List<string> ();
 			List<string> vals = new List<string> ();
@@ -98,7 +101,7 @@ namespace Sympathy
 		
 		protected override string updateQuery ()
 		{
-			string query = "UPDATE {0} SET {1} WHERE {2}";
+			string query = "UPDATE [{0}] SET {1} WHERE {2}";
 			
 			List<string> update = new List<string>();
 			List<string> where  = new List<string>();

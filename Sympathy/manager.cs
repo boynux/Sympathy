@@ -195,7 +195,7 @@ namespace Sympathy
 				}
 			}
 			
-			if (builder.Table.PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly &&
+			if (/* builder.Table.PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly && */
 				 !builder.Table.PrimaryKey.DefaultValue.Equals (builder.Table.PrimaryKey.getValue (model)))
 			{
 				builder.Type = QueryBuilder.QueryType.Update;

@@ -28,15 +28,7 @@ namespace Sympathy
 								word += "_" + letter.ToString ().ToLower ();
 							else 
 								word += letter.ToString ().ToLower ();
-						}
-						/*
-						if (index1 < parts[index].Length - 1) {
-							char nextLetter = parts[index][index1 + 1];
-							if (nextLetter >= 'a' && nextLetter <= 'z')
-								word += (index1 > 0 ? "_" : "") + letter.ToString ().ToLower ();
-							else 
-								word += letter.ToString ().ToLower ();
-						} */ else {
+						} else {
 							word += letter.ToString ().ToLower ();
 						}
 					} 
