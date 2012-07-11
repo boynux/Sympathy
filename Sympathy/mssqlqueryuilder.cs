@@ -52,6 +52,8 @@ namespace Sympathy
 							where.Add (string.Format ("[{0}] {1} ({2})", key, _operator, string.Join (",", value)));
 						} else if (item.Value.Key == Operators.In) {
 							where.Add (string.Format ("[{0}] {1} ({2})", key, _operator, value));
+						} else if (item.Value.Key == Operators.Between) {
+							where.Add (string.Format ("[{0}] {1} {2}", key, _operator, value));
 						} else if (value.GetType ().Equals ( typeof (Boolean)) && Table[item.Key].DbType !=  System.Data.DbType.String) {
 							where.Add (string.Format ("[{0}] {1} '{2}'", key, _operator, (bool)value ? 1 : 0));
 						} else {
@@ -65,6 +67,18 @@ namespace Sympathy
 				query += string.Format (" WHERE {0}", string.Join (" AND ", where));
 			}
 			
+			if (OrderBy != null) {
+				List<string> ordering = new List<string> ();
+				foreach (KeyValuePair<string, object> item in OrderBy) {
+					ordering.Add (string.Format ("{0} {1}", Table[item.Key].Name, item.Value));
+				}
+				
+				if (ordering.Count > 0)
+					query += string.Format (" ORDER BY {0}", string.Join (", ", ordering));
+			}
+			
+			// Console.WriteLine (query);
+				
 			return query;
 		}
 		
@@ -78,11 +92,28 @@ namespace Sympathy
 		
 		protected override string insertQuery (System.Collections.Generic.IDictionary<string, object> values)
 		{
-			string query = "INSERT INTO [{0}] ({1}) VALUES ({2}); SELECT CAST(Scope_Identity() AS INT);";
+			string query = 
+@"
+BEGIN TRAN
+	UPDATE [{0}] WITH (SERIALIZABLE) SET {1} WHERE {2};
+	IF @@ROWCOUNT = 0
+	BEGIN
+		INSERT INTO [{0}] ({3}) VALUES ({4}); SELECT @@IDENTITY
+	END
+
+	SELECT @@IDENTITY
+COMMIT TRAN
+";
+
+			// string query = "INSERT INTO [{0}] ({1}) VALUES ({2}); SELECT CAST(Scope_Identity() AS INT);";
 			
 			List<string> cols = new List<string> ();
 			List<string> vals = new List<string> ();
 			
+			List<string> update = new List<string>();
+			List<string> where  = new List<string>();
+			
+			_criteria.each ( (item, value) => where.Add (string.Format ("{0}='{1}'", item, value)) );
 			
 			foreach (KeyValuePair<string, object> item in values) {
 				if (item.Value != null && Table[item.Key] != null) {
@@ -90,13 +121,33 @@ namespace Sympathy
 					
 					System.Data.DbType colType = Table[item.Key].DbType;
 					
-					if (colType == System.Data.DbType.String || colType == System.Data.DbType.DateTime)
-						vals.Add (string.Format ("'{0}'", item.Value.ToString ()));
-					else
+					if (colType == System.Data.DbType.String || colType == System.Data.DbType.DateTime) {
+						string value = item.Value.ToString ();
+						
+						if (item.Value.GetType () == typeof (System.DateTime)) {
+							value = ((DateTime)item.Value).ToString ("yyyy-MM-dd HH:mm:ss");
+						}	
+						vals.Add (string.Format ("'{0}'", value));
+						update.Add (string.Format ("[{0}] = '{1}'", Utils.genrateNameFromType (item.Key), value));
+					} else {
 						vals.Add (string.Format ("{0}", item.Value));
+						update.Add (string.Format ("[{0}] = {1}", Utils.genrateNameFromType (item.Key), item.Value));
+					}
 				}
 			}
-			return string.Format (query, Table.Name, string.Join (", ", cols), string.Join (", ", vals));
+			
+			query = string.Format (
+				query, 
+				Table.Name, 
+				string.Join (", ", update), 
+				string.Join (", ", where),
+				string.Join (", ", cols),
+				string.Join (", ", vals)
+			);
+			
+			Console.WriteLine (query);
+			return query;
+			// return string.Format (query, Table.Name, string.Join (", ", cols), string.Join (", ", cols));
 		}
 		
 		protected override string updateQuery ()

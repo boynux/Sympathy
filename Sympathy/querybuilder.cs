@@ -16,7 +16,9 @@ namespace Sympathy
 		public QueryType Type { get; set; }
 		public Table Table { get; set; }
 		
-		public IDictionary<string, object>Criteria
+		public Criteria OrderBy { get; set; }
+		
+		public IDictionary<string, object> Criteria
 		{
 			set
 			{
@@ -24,7 +26,7 @@ namespace Sympathy
 			}
 		}
 		
-		public IDictionary<string, object>Values
+		public IDictionary<string, object> Values
 		{
 			set
 			{
@@ -64,6 +66,9 @@ namespace Sympathy
 						break;
 					case "like":
 						oper = Operators.Like;
+						break;
+					case "between":
+						oper = Operators.Between;
 						break;
 					default:
 						break;
@@ -126,9 +131,10 @@ namespace Sympathy
 			{ Operators.LessThanOrEqual, "<=" },
 			{ Operators.GreaterThan, ">" },
 			{ Operators.GreaterThanOrEqual, ">=" },
-			{ Operators.Like, ":LIKE" },
-			{ Operators.In, "in" },
-			{ Operators.NotEqual, "<>" }
+			{ Operators.Like, "LIKE" },
+			{ Operators.In, "IN" },
+			{ Operators.NotEqual, "<>" },
+			{ Operators.Between, "BETWEEN" }
 		};
 		
 		protected Criteria _criteria;

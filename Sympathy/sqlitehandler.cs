@@ -35,6 +35,11 @@ namespace Sympathy
 				_queryString += string.Format (" WHERE {0}", string.Join (", ", criteria.ToArray ()));
 		}
 		
+		protected override void applyOrdering ()
+		{
+			throw new NotImplementedException ();
+		}
+		
 		protected override void applyParameters ()
 		{
 			if (_criteria == null)

@@ -131,6 +131,11 @@ namespace Sympathy
 			_criteria = filter;
 		}
 		
+		public void setOrdering (Criteria orderBy)
+		{
+			_orderBy = orderBy;
+		}
+		
 		public IList<_Model> filterFromQuery <_Model> (string queryStrng) where _Model: iModel, new ()
 		{
 			_Handler handler = new _Handler ();
@@ -149,9 +154,11 @@ namespace Sympathy
 			return list;
 		}
 		
-		public IList<_Model> filter <_Model> (Criteria criteria = null) where _Model: iModel, new ()
+		public IList<_Model> filter <_Model> (Criteria criteria = null, Criteria orderBy = null) where _Model: iModel, new ()
 		{
 			setCriteria (criteria);
+			setOrdering (orderBy);
+			
 			prepareHandler<_Model> ();
 			
 			return filterFromQuery <_Model> (_handler.QueryBuilder.ToString ());
@@ -164,6 +171,8 @@ namespace Sympathy
 			
 			if (_criteria != null)
 				_handler.QueryBuilder.Criteria = _criteria;
+			
+			_handler.QueryBuilder.OrderBy = _orderBy;
 		}
 		
 		protected string getSelectQuery<_Model> () where _Model: iModel, new ()
@@ -195,7 +204,7 @@ namespace Sympathy
 				}
 			}
 			
-			if (/* builder.Table.PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly && */
+			if (builder.Table.PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly &&
 				 !builder.Table.PrimaryKey.DefaultValue.Equals (builder.Table.PrimaryKey.getValue (model)))
 			{
 				builder.Type = QueryBuilder.QueryType.Update;
@@ -204,6 +213,7 @@ namespace Sympathy
 			else
 			{
 				builder.Type = QueryBuilder.QueryType.Insert;
+				builder.Criteria = new Criteria () { {builder.Table.PrimaryKey.Name, builder.Table.PrimaryKey.getValue (model)} };
 			}
 			
 			builder.Values = values;
@@ -213,7 +223,19 @@ namespace Sympathy
 		public dynamic save (iModel model)
 		{
 			_Handler handler = getInsertQuery (model);
-			int id = handler.execute ();
+			object id = handler.execute ();
+			
+			if (Table (model).PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly &&
+				handler.QueryBuilder.Type == QueryBuilder.QueryType.Insert && id != null)
+				Table (model).PrimaryKey.setValue (model, id);
+			
+			return model;
+		}
+		
+		public dynamic update (iModel model)
+		{
+			_Handler handler = getInsertQuery (model);
+			object id = handler.execute ();
 			
 			if (Table (model).PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly && 
 				handler.QueryBuilder.Type == QueryBuilder.QueryType.Insert )
@@ -240,6 +262,7 @@ namespace Sympathy
 		}
 
 		protected Criteria _criteria;
+		protected Criteria _orderBy;
 		protected _Handler _handler;
 		protected Table _table;
 		protected iModel _model;

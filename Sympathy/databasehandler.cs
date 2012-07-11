@@ -46,6 +46,8 @@ namespace Sympathy
 			}
 		}
 		
+		public Criteria OrderBy  { set; private get; }
+		
 		public int AffectedRows
 		{
 			get
@@ -113,10 +115,10 @@ namespace Sympathy
 			_reader = _command.ExecuteReader (CommandBehavior.CloseConnection);
 		}
 		
-		public int execute ()
+		public object execute ()
 		{
 			prepare ();
-			int result = Convert.ToInt32 (_command.ExecuteScalar ());
+			object result = _command.ExecuteScalar ();
 			this.close ();
 			
 			return result;
@@ -132,14 +134,19 @@ namespace Sympathy
 		public abstract void addParameter (string name, object value);
 		protected abstract void applyFilters ();
 		protected abstract void applyParameters ();
+		protected abstract void applyOrdering ();
 		
 		protected IDbConnection _connection;
 		protected IDbCommand _command;
 		protected IDataReader _reader;
+		
 		protected string _queryString;
 		protected string _queryStringCriteria;
 		protected string _connectionString;
+		
 		protected Criteria _criteria;
+		protected Criteria _orderBy;
+		
 		protected SqliteQueryBuilder _builder;
 		protected int _affectedRows;
 		protected QueryBuilder _queryBuilder; 
