@@ -54,6 +54,7 @@
     <Compile Include="mssqlqueryuilder.cs" />
     <Compile Include="mssqlhandler.cs" />
     <Compile Include="utils.cs" />
+    <Compile Include="methodattribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

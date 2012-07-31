@@ -1,13 +1,19 @@
 ﻿<Properties GitUserInfo="UsingMD">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Sympathy/manager.cs">
+    <Files>
+      <File FileName="Sympathy/mssqlhandler.cs" Line="10" Column="6" />
+      <File FileName="Sympathy/manager.cs" Line="230" Column="4" />
+      <File FileName="Sympathy/imodel.cs" Line="9" Column="3" />
+      <File FileName="Sympathy/mssqlqueryuilder.cs" Line="93" Column="29" />
+      <File FileName="Sympathy/querybuilder.cs" Line="97" Column="12" />
+      <File FileName="Sympathy/sqlitehandler.cs" Line="38" Column="34" />
+      <File FileName="Sympathy/column.cs" Line="74" Column="3" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Sympathy" expanded="True">
-            <Node name="References" expanded="True" />
-            <Node name="databasehandler.cs" selected="True" />
-          </Node>
+          <Node name="Sympathy" expanded="True" />
           <Node name="unittest" expanded="True" />
         </State>
       </Pad>

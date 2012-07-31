@@ -15,15 +15,18 @@ namespace Sympathy
 		
 		~DatabaseHandler ()
 		{
-			if (_reader != null && !_reader.IsClosed) {
+			/*
+			if (_reader != null && !_reader.IsClosed ) {
 				_reader.Close ();
 				
 				// _reader.Dispose ();
 			}
 			
+			
 			if (_connection != null && _connection.State != ConnectionState.Closed) {
 				_connection.Close ();
 			}
+			*/
 		}
 		
 		public string QueryString 

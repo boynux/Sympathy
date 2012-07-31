@@ -69,11 +69,16 @@ namespace Sympathy
 				} else if (typeof (iModel).IsAssignableFrom (column.Type)) {
 					try {
 						dynamic fmodel = Activator.CreateInstance (column.Type);
-						
+							
 						dynamic value = this.GetType ().GetMethod ("getObject", new Type [] { typeof (Criteria) }).MakeGenericMethod (column.Type).Invoke (this, new object[] { new Criteria () { {Table(fmodel).PrimaryKey.Name.ToLower (), values[column.Name.ToLower ()] } } });
 						column.setValue (model, value);
 					} catch (DoesNotExistException /* e */) {
 						// column.setValue (model, null);
+					} catch ( Exception ex ) {
+						if ( ex.InnerException.GetType () == typeof ( DoesNotExistException ) )
+							column.setValue ( model, Activator.CreateInstance ( column.Type ) );
+						else
+							Console.WriteLine ( ex.ToString () );
 					}
 				} else {
 					column.setValue (model, values[column.Name.ToLower ()]);
@@ -82,6 +87,7 @@ namespace Sympathy
 			
 			return model;
 		}
+		
 		/*
 		protected string getOneToManyQuery<_Model> (Column column) where _Model: iModel, new ()
 		{
