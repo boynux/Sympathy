@@ -75,10 +75,12 @@ namespace Sympathy
 					} catch (DoesNotExistException /* e */) {
 						// column.setValue (model, null);
 					} catch ( Exception ex ) {
-						if ( ex.InnerException.GetType () == typeof ( DoesNotExistException ) )
-							column.setValue ( model, Activator.CreateInstance ( column.Type ) );
-						else
+						if ( ex.InnerException.GetType () == typeof ( DoesNotExistException ) ) {
+							column.setValue ( model, null );
+						} else {
 							Console.WriteLine ( ex.ToString () );
+							throw ex;
+						}
 					}
 				} else {
 					column.setValue (model, values[column.Name.ToLower ()]);
@@ -202,8 +204,9 @@ namespace Sympathy
 				if (column != builder.Table.PrimaryKey || builder.Table.PrimaryKey.AccessType != Sympathy.Attributes.AccessTypes.ReadOnly) {
 					if (typeof (iModel).IsAssignableFrom (column.Type)) {
 						dynamic fmodel = column.getValue (model);
-						
-						values.Add (column.Name.ToLower (), Table (fmodel).PrimaryKey.getValue (fmodel));
+
+						if ( fmodel != null )
+							values.Add (column.Name.ToLower (), Table (fmodel).PrimaryKey.getValue (fmodel));
 					} else {
 						values.Add (column.Name.ToLower (), column.getValue (model));
 					}

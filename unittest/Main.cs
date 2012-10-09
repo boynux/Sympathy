@@ -8,7 +8,7 @@ namespace UnitTest
 	{
 		public static void Main (string[] args)
 		{
-			Manager<SqliteHandler> manager = new Manager<SqliteHandler> ();
+			Manager<MSSqlHandler> manager = new Manager<MSSqlHandler> ();
 			TestModel test = new TestModel ();
 			
 			Console.WriteLine (string.Format ("TestModel default values: {0}: {1}.", Activator.CreateInstance (typeof (int)),test.Name));

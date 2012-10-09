@@ -61,9 +61,9 @@ namespace Sympathy
 				} else {
 					_fieldInfo.SetValue (model, Enum.ToObject (Type, val));
 				}
-			} else if ( val.Equals (DBNull.Value) && Type.IsValueType ) {
+			} else if ( val != null && val.Equals (DBNull.Value) && Type.IsValueType ) {
 				_fieldInfo.SetValue (model, Activator.CreateInstance (Type));
-			} else if (!Type.Equals (val.GetType())) {
+			} else if (val != null && !Type.Equals (val.GetType())) {
 				System.ComponentModel.TypeConverter converter = System.ComponentModel.TypeDescriptor.GetConverter (val.GetType ());
 				_fieldInfo.SetValue (model, converter.ConvertTo (val, Type));
 			} else {
