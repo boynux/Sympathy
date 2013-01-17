@@ -16,7 +16,15 @@ namespace Sympathy
 		
 		[FieldAttribute (DbType = System.Data.DbType.String)]
 		public TestEnum type;
+
+		[Serialize]
+		public void Hello ()
+		{
+			Console.WriteLine ( "test" );
+		}
 	}
+
+
 	
 	public enum TestEnum
 	{

@@ -39,7 +39,26 @@ namespace Sympathy
 			
 			return columns;
 		}
-		
+
+		public void afterSerialize ()
+		{
+			MethodInfo[] methods = _model.GetType ().GetMethods ( 
+				System.Reflection.BindingFlags.Instance | 
+				System.Reflection.BindingFlags.Public |
+				System.Reflection.BindingFlags.NonPublic |
+			    System.Reflection.BindingFlags.FlattenHierarchy
+			);
+			
+			foreach (System.Reflection.MethodInfo method in methods) {
+				try {
+					if (method.GetCustomAttributes (true)[0].GetType () == typeof (Attributes.SerializeAttribute)) {
+						method.Invoke ( _model, new object[] { } );
+					}
+				} catch (Exception /* e */) {}	
+			}
+			
+		}
+
 		public Table getTable ()
 		{
 			string table = string.Empty;

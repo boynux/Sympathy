@@ -61,6 +61,8 @@ namespace Sympathy
 				} else {
 					_fieldInfo.SetValue (model, Enum.ToObject (Type, val));
 				}
+			} else if ( Type == typeof ( bool ) && DbType == System.Data.DbType.String ) {
+				_fieldInfo.SetValue (model, bool.Parse ( val.ToString ()));
 			} else if ( val != null && val.Equals (DBNull.Value) && Type.IsValueType ) {
 				_fieldInfo.SetValue (model, Activator.CreateInstance (Type));
 			} else if (val != null && !Type.Equals (val.GetType())) {

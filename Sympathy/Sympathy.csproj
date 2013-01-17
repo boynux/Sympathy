@@ -55,6 +55,7 @@
     <Compile Include="mssqlhandler.cs" />
     <Compile Include="utils.cs" />
     <Compile Include="methodattribute.cs" />
+    <Compile Include="serializeattribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

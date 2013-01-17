@@ -77,8 +77,8 @@ namespace Sympathy
 					query += string.Format (" ORDER BY {0}", string.Join (", ", ordering));
 			}
 			
-			// Console.WriteLine (query);
-				
+			Console.WriteLine (query);
+
 			return query;
 		}
 		

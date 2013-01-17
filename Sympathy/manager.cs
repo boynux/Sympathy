@@ -237,7 +237,10 @@ namespace Sympathy
 			if (Table (model).PrimaryKey.AccessType == Sympathy.Attributes.AccessTypes.ReadOnly &&
 				handler.QueryBuilder.Type == QueryBuilder.QueryType.Insert && id != null)
 				Table (model).PrimaryKey.setValue (model, id);
-			
+
+			Reflector reflector = new Reflector ( model );
+			reflector.afterSerialize ();
+
 			return model;
 		}
 		
